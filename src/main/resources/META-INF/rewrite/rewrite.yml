@@ -1,0 +1,26 @@
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: com.yourorg.ChangeParentPomExample
+displayName: Change Maven Parent Pom example
+recipeList:
+  - org.openrewrite.maven.ChangeParentPom:
+      oldGroupId: org.springframework.boot
+      newGroupId: org.springframework.boot
+      oldArtifactId: spring-boot-starter-parent
+      newArtifactId: spring-boot-starter-parent
+      newVersion: 2.6.7
+      versionPattern:
+      allowVersionDowngrades: false
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: com.yourorg.ChangeAmigaParentPomExample
+displayName: Change Maven Parent Pom example
+recipeList:
+    - org.openrewrite.maven.ChangeParentPom:
+        oldGroupId: com.inditex.aqsw.framework.amiga
+        newGroupId: com.inditex.aqsw.framework.amiga
+        oldArtifactId: amiga-framework
+        newArtifactId: amiga-framework
+        newVersion: 4.9.0-SNAPSHOT
+        versionPattern:
+        allowVersionDowngrades: false      
