@@ -16,7 +16,6 @@ import org.openrewrite.xml.tree.Xml;
 import org.openrewrite.yaml.MergeYaml;
 import org.openrewrite.yaml.search.FindProperty;
 import org.openrewrite.yaml.tree.Yaml;
-
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -29,48 +28,41 @@ public class YmlMavenCustomRecipe extends Recipe {
     /**
      * The Group id find.
      */
-    @Option(displayName = "GroupIdFind",
-            description = "The groupId of the maven to find",
+    @Option(displayName = "GroupIdFind", description = "The groupId of the maven to find",
             example = "com.fasterxml.jackson.core")
     String groupIdFind;
 
     /**
      * The Artifact id find.
      */
-    @Option(displayName = "ArtifactIdFind",
-            description = "The artifactId of the maven to find",
+    @Option(displayName = "ArtifactIdFind", description = "The artifactId of the maven to find",
             example = "jackson-databind")
     String artifactIdFind;
 
     /**
      * The Yaml key find.
      */
-    @Option(displayName = "yamlKeyFind",
-            description = "The key of the yaml property to find",
-            example = "foo.key")
+    @Option(displayName = "yamlKeyFind", description = "The key of the yaml property to find", example = "foo.key")
     String yamlKeyFind;
 
     /**
      * The New yaml key.
      */
-    @Option(displayName = "newYamlKey",
-            description = "The new key of yaml property",
-            example = "foo.bar.new")
+    @Option(displayName = "newYamlKey", description = "The new key of yaml property", example = "foo.bar.new")
     String newYamlKey;
 
     /**
      * Instantiates a new Yml maven custom recipe.
-     *
-     * @param groupIdFind    the group id find
+     * @param groupIdFind the group id find
      * @param artifactIdFind the artifact id find
-     * @param yamlKeyFind    the yaml key find
-     * @param newYamlKey     the new yaml key
+     * @param yamlKeyFind the yaml key find
+     * @param newYamlKey the new yaml key
      */
     @JsonCreator
     public YmlMavenCustomRecipe(@NonNull @JsonProperty("groupIdFind") String groupIdFind,
-                                @NonNull @JsonProperty("artifactIdFind") String artifactIdFind,
-                                @NonNull @JsonProperty("yamlKeyFind") String yamlKeyFind,
-                                @NonNull @JsonProperty("newYamlKey") String newYamlKey) {
+            @NonNull @JsonProperty("artifactIdFind") String artifactIdFind,
+            @NonNull @JsonProperty("yamlKeyFind") String yamlKeyFind,
+            @NonNull @JsonProperty("newYamlKey") String newYamlKey) {
         this.groupIdFind = groupIdFind;
         this.artifactIdFind = artifactIdFind;
         this.yamlKeyFind = yamlKeyFind;
@@ -112,14 +104,16 @@ public class YmlMavenCustomRecipe extends Recipe {
         return super.visit(before, ctx);
     }
 
-    private void findMavenDependency(ExecutionContext ctx, AtomicBoolean mavenDatagridEmbeddedFound, SourceFile sourceFile) {
+    private void findMavenDependency(ExecutionContext ctx, AtomicBoolean mavenDatagridEmbeddedFound,
+            SourceFile sourceFile) {
         new MavenVisitor<ExecutionContext>() {
+
             @Override
             public Xml visitDocument(Xml.Document document, ExecutionContext ctx) {
-                for (ResolvedDependency resolvedDependency : getResolutionResult()
-                        .getDependencies()
+                for (ResolvedDependency resolvedDependency : getResolutionResult().getDependencies()
                         .get(Scope.fromName(Scope.Compile.name()))) {
-                    if (resolvedDependency.getGav().getGroupId().equals(groupIdFind) && resolvedDependency.getArtifactId().equals(artifactIdFind)) {
+                    if (resolvedDependency.getGav().getGroupId().equals(groupIdFind)
+                            && resolvedDependency.getArtifactId().equals(artifactIdFind)) {
                         mavenDatagridEmbeddedFound.set(true);
                         break;
                     }

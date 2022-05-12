@@ -7,8 +7,7 @@ import org.openrewrite.yaml.tree.Yaml;
 
 public class OpenRewriteUtils {
 
-    public OpenRewriteUtils() {
-    }
+    public OpenRewriteUtils() {}
 
     public static boolean isMavenSource(final SourceFile s) {
         return s instanceof Xml.Document && s.getMarkers().findFirst(MavenResolutionResult.class).isPresent();
