@@ -11,3 +11,13 @@ recipeList:
       newVersion: 2.6.7
       versionPattern:
       allowVersionDowngrades: false
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: com.yourorg.YmlMavenRecipe
+displayName: Change application.yml if an specific maven dependency is found and an specif yaml property is not found 
+recipeList:
+    - com.ferblaca.openrewrite.recipes.YmlMavenCustomRecipe:
+        groupIdFind: com.fasterxml.jackson.core 
+        artifactIdFind: jackson-databind
+        yamlKeyFind: foo.key
+        newYamlKey: foo.bar.new

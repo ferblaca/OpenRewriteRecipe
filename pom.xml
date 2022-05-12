@@ -19,6 +19,11 @@
             <artifactId>rewrite-maven</artifactId>
             <version>7.22.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.openrewrite</groupId>
+            <artifactId>rewrite-yaml</artifactId>
+            <version>7.22.0</version>
+        </dependency>
         <!-- For authoring tests for any kind of Recipe -->
         <dependency>
             <groupId>org.openrewrite</groupId>
