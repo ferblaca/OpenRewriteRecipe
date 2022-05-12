@@ -21,3 +21,11 @@ recipeList:
       artifactIdFind: 'jackson-databind'
       yamlKeyFind: 'foo.key'
       newYamlKey: 'foo.bar.new: true'
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: com.yourorg.DetectMarkerRecipe
+displayName: Add maven property if marker file it's found on project
+recipeList:
+  - com.ferblaca.openrewrite.recipes.DetectMarkerRecipe:
+      markerFileName: 'file.marker'
+      mavenPropertyName: 'new-maven-property'
