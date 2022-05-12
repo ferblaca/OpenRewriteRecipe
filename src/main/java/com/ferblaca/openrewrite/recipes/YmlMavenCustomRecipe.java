@@ -1,13 +1,17 @@
 package com.ferblaca.openrewrite.recipes;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ferblaca.openrewrite.utils.OpenRewriteUtils;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Option;
 import org.openrewrite.Recipe;
 import org.openrewrite.SourceFile;
 import org.openrewrite.internal.ListUtils;
-import org.openrewrite.internal.lang.Nullable;
-import org.openrewrite.maven.search.FindDependency;
+import org.openrewrite.internal.lang.NonNull;
+import org.openrewrite.maven.MavenVisitor;
+import org.openrewrite.maven.tree.ResolvedDependency;
+import org.openrewrite.maven.tree.Scope;
 import org.openrewrite.xml.tree.Xml;
 import org.openrewrite.yaml.MergeYaml;
 import org.openrewrite.yaml.search.FindProperty;
@@ -17,29 +21,56 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * The type Yml maven custom recipe.
+ */
 public class YmlMavenCustomRecipe extends Recipe {
 
+    /**
+     * The Group id find.
+     */
     @Option(displayName = "GroupIdFind",
             description = "The groupId of the maven to find",
             example = "com.fasterxml.jackson.core")
     String groupIdFind;
 
+    /**
+     * The Artifact id find.
+     */
     @Option(displayName = "ArtifactIdFind",
             description = "The artifactId of the maven to find",
             example = "jackson-databind")
     String artifactIdFind;
 
+    /**
+     * The Yaml key find.
+     */
     @Option(displayName = "yamlKeyFind",
             description = "The key of the yaml property to find",
             example = "foo.key")
     String yamlKeyFind;
 
+    /**
+     * The New yaml key.
+     */
     @Option(displayName = "newYamlKey",
             description = "The new key of yaml property",
             example = "foo.bar.new")
     String newYamlKey;
 
-    public YmlMavenCustomRecipe(String groupIdFind, String artifactIdFind, String yamlKeyFind, String newYamlKey) {
+    /**
+     * Instantiates a new Yml maven custom recipe.
+     *
+     * @param groupIdFind    the group id find
+     * @param artifactIdFind the artifact id find
+     * @param yamlKeyFind    the yaml key find
+     * @param newYamlKey     the new yaml key
+     */
+    @JsonCreator
+    public YmlMavenCustomRecipe(@NonNull @JsonProperty("groupIdFind") String groupIdFind,
+                                @NonNull @JsonProperty("artifactIdFind") String artifactIdFind,
+                                @NonNull @JsonProperty("yamlKeyFind") String yamlKeyFind,
+                                @NonNull @JsonProperty("newYamlKey") String newYamlKey) {
         this.groupIdFind = groupIdFind;
         this.artifactIdFind = artifactIdFind;
         this.yamlKeyFind = yamlKeyFind;
@@ -60,10 +91,8 @@ public class YmlMavenCustomRecipe extends Recipe {
             if (OpenRewriteUtils.isMavenSource(sourceFile)) {
                 final Xml.Document mavenDocument = (Xml.Document) sourceFile;
                 // finding any maven dependency...
-                final Set<Xml.Tag> tags =
-                        FindDependency.find(mavenDocument, groupIdFind, artifactIdFind);
-                if (!tags.isEmpty()) {
-                    mavenDatagridEmbeddedFound.set(true);
+                if (!mavenDatagridEmbeddedFound.get()) {
+                    findMavenDependency(ctx, mavenDatagridEmbeddedFound, sourceFile);
                 }
             } else if (OpenRewriteUtils.isYamlSource(sourceFile)) {
                 // Find property into Yml source
@@ -82,4 +111,22 @@ public class YmlMavenCustomRecipe extends Recipe {
         }
         return super.visit(before, ctx);
     }
+
+    private void findMavenDependency(ExecutionContext ctx, AtomicBoolean mavenDatagridEmbeddedFound, SourceFile sourceFile) {
+        new MavenVisitor<ExecutionContext>() {
+            @Override
+            public Xml visitDocument(Xml.Document document, ExecutionContext ctx) {
+                for (ResolvedDependency resolvedDependency : getResolutionResult()
+                        .getDependencies()
+                        .get(Scope.fromName(Scope.Compile.name()))) {
+                    if (resolvedDependency.getGav().getGroupId().equals(groupIdFind) && resolvedDependency.getArtifactId().equals(artifactIdFind)) {
+                        mavenDatagridEmbeddedFound.set(true);
+                        break;
+                    }
+                }
+                return super.visitDocument(document, ctx);
+            }
+        }.visit(sourceFile, ctx);
+    }
+
 }
