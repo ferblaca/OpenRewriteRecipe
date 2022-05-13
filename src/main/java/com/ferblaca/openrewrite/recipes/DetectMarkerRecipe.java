@@ -1,11 +1,13 @@
 package com.ferblaca.openrewrite.recipes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ferblaca.openrewrite.utils.OpenRewriteUtils;
 import org.openrewrite.*;
 import org.openrewrite.internal.ListUtils;
 import org.openrewrite.internal.lang.NonNull;
 import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.maven.ChangePropertyValue;
+import org.openrewrite.quark.Quark;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,20 +36,35 @@ public class DetectMarkerRecipe extends Recipe {
     @Override
     protected List<SourceFile> visit(final List<SourceFile> before, final ExecutionContext ctx) {
         final AtomicBoolean amigaWsApiFirstClientMarkerFound = new AtomicBoolean(false);
+
         ListUtils.map(before, (integer, sourceFile) -> {
             new TreeVisitor<Tree, ExecutionContext>() {
-                @Nullable
                 @Override
-                public Tree visit(@Nullable final Tree tree, final ExecutionContext executionContext) {
-                    if (tree instanceof SourceFile) {
-                        final SourceFile sourceFile = (SourceFile) tree;
-                        System.out.println("############ sourceFile: " + sourceFile.getSourcePath());
-                        if (sourceFile.getSourcePath().endsWith(markerFileName)) {
-                            amigaWsApiFirstClientMarkerFound.set(true);
-                        }
+                public @Nullable Tree visitSourceFile(SourceFile sourceFile, ExecutionContext executionContext) {
+                    if (OpenRewriteUtils.isQuarkSource(sourceFile)) {
+                        Quark quark = (Quark) sourceFile;
+                        System.out.println("############ Quark found: " + quark.getSourcePath());
                     }
-                    return tree;
+
+                    if (sourceFile.getSourcePath().endsWith(markerFileName)) {
+                        amigaWsApiFirstClientMarkerFound.set(true);
+                    }
+                    return sourceFile;
                 }
+
+//                @Nullable
+//                @Override
+//                public Tree visit(@Nullable final Tree tree, final ExecutionContext executionContext) {
+//                    if (tree instanceof SourceFile) {
+//                        final SourceFile sourceFile = (SourceFile) tree;
+//                        System.out.println("############ sourceFile: " + sourceFile.getSourcePath());
+//                        if (sourceFile.getSourcePath().endsWith(markerFileName)) {
+//                            amigaWsApiFirstClientMarkerFound.set(true);
+//                        }
+//                    }
+//                    return tree;
+//                }
+
             }.visit(before, ctx);
             return sourceFile;
         });

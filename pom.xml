@@ -11,24 +11,25 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <rewrite.version>7.23.0</rewrite.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.openrewrite</groupId>
             <artifactId>rewrite-maven</artifactId>
-            <version>7.22.0</version>
+            <version>${rewrite.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openrewrite</groupId>
             <artifactId>rewrite-yaml</artifactId>
-            <version>7.22.0</version>
+            <version>${rewrite.version}</version>
         </dependency>
         <!-- For authoring tests for any kind of Recipe -->
         <dependency>
             <groupId>org.openrewrite</groupId>
             <artifactId>rewrite-test</artifactId>
-            <version>7.22.0</version>
+            <version>${rewrite.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -40,7 +41,7 @@
         <dependency>
             <groupId>org.openrewrite</groupId>
             <artifactId>rewrite-java-11</artifactId>
-            <version>7.22.0</version>
+            <version>${rewrite.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

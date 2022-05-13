@@ -2,12 +2,18 @@ package com.ferblaca.openrewrite.utils;
 
 import org.openrewrite.SourceFile;
 import org.openrewrite.maven.tree.MavenResolutionResult;
+import org.openrewrite.quark.Quark;
 import org.openrewrite.xml.tree.Xml;
 import org.openrewrite.yaml.tree.Yaml;
 
 public class OpenRewriteUtils {
 
-    public OpenRewriteUtils() {}
+    public OpenRewriteUtils() {
+    }
+
+    public static boolean isQuarkSource(final SourceFile s) {
+        return s instanceof Quark;
+    }
 
     public static boolean isMavenSource(final SourceFile s) {
         return s instanceof Xml.Document && s.getMarkers().findFirst(MavenResolutionResult.class).isPresent();
