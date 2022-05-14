@@ -75,7 +75,7 @@ class AddJasyptDependencyMavenTest {
                 "        <groupId>org.springframework.boot</groupId>\n" +
                 "        <artifactId>spring-boot-starter-parent</artifactId>\n" +
                 "        <version>2.6.5</version>\n" +
-                "        <relativePath/> <!-- lookup parent from repository -->\n" +
+                "        <relativePath/>\n" +
                 "    </parent>\n" +
                 "    <groupId>com.example.openrewrite.test</groupId>\n" +
                 "    <artifactId>demoOpenrewrite</artifactId>\n" +
@@ -84,11 +84,13 @@ class AddJasyptDependencyMavenTest {
                 "    <properties>\n" +
                 "        <java.version>11</java.version>\n" +
                 "    </properties>\n" +
-                "    <dependency>\n" +
-                "        <groupId>org.jasypt</groupId>\n" +
-                "        <artifactId>jasypt</artifactId>\n" +
-                "        <version>1.9.3</version>\n" +
-                "    </dependency>\n" +
+                "    <dependencies>\n" +
+                "        <dependency>\n" +
+                "            <groupId>org.jasypt</groupId>\n" +
+                "            <artifactId>jasypt</artifactId>\n" +
+                "            <version>1.9.3</version>\n" +
+                "        </dependency>\n" +
+                "    </dependencies>\n" +
                 "</project>";
 
         // Recipe Results assertions

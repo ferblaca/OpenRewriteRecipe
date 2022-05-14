@@ -6,6 +6,7 @@ import org.openrewrite.Recipe;
 import org.openrewrite.SourceFile;
 import org.openrewrite.internal.ListUtils;
 import org.openrewrite.maven.AddDependencyVisitor;
+import org.openrewrite.maven.search.FindDependency;
 import org.openrewrite.maven.tree.Scope;
 import org.openrewrite.xml.tree.Xml;
 import org.openrewrite.yaml.YamlIsoVisitor;
@@ -44,18 +45,19 @@ public class AddJasyptDependencyMaven extends Recipe {
 
         // If Jasypt value is found on yml file...
         if (yamlEncValueFound.get()) {
-            ListUtils.map(before, sourceFile -> {
-                if (OpenRewriteUtils.isMavenSource(sourceFile)) {
+            return ListUtils.map(before, sourceFile -> {
+                if (OpenRewriteUtils.isMavenSource(sourceFile) && FindDependency.find((Xml.Document) sourceFile, "org.jasypt", "jasypt").isEmpty()) {
                     // Add recipe to add the jasypt stater
                     final AddDependencyVisitor addDependencyVisitor =
                             new AddDependencyVisitor("org.jasypt", "jasypt", "1.9.3", null,
-                                    Scope.Compile.name(), false, null, null, null, null);
+                                    "compile", false, null, null, null, null);
                     final Xml visit = addDependencyVisitor.visit(sourceFile, ctx);
                     return (SourceFile) visit;
                 }
                 return sourceFile;
             });
         }
+        
         return before;
     }
 }
