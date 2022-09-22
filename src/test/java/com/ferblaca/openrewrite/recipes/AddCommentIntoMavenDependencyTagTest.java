@@ -72,7 +72,7 @@ class AddCommentIntoMavenDependencyTagTest {
         "    </properties>\n" +
         "    <dependencies>\n" +
         "        <dependency>\n" +
-        "            <!--custom comment into dependency!!!-->\n" +
+        "        <!--custom comment into dependency!!!-->\n" +
         "            <groupId>org.jasypt</groupId>\n" +
         "            <artifactId>jasypt</artifactId>\n" +
         "            <version>1.9.3</version>\n" +
